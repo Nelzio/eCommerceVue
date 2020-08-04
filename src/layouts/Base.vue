@@ -24,14 +24,15 @@
             <router-link class="nav-link h4" to="/profile">Profile</router-link>
             </li>
           </ul>-->
-          <img
-            src="https://avatars1.githubusercontent.com/u/23185608?s=400&u=bc42cb2349f970275f68f9f2cde6cbda021c04ba&v=4"
-            class="img-thumbnail profile-image ml-auto"
-            alt
-          />
-          <router-link class="btn btn-primary my-2 my-sm-0" to="/admin/add">
-            Add Product
-          </router-link>
+          <div v-if="user.photoURL" class="ml-auto">
+            <img
+              :src="user.photoURL"
+              class="img-thumbnail profile-image"
+              alt
+            />
+            <router-link class="btn btn-primary my-2 my-sm-0" to="/admin/add">Add Product</router-link>
+          </div>
+          <router-link v-else class="btn btn-primary my-2 my-sm-0 ml-auto" to="/login">Login</router-link>
           <router-link class="btn btn-primary my-2 my-sm-0" to="/cart">
             <img
               src="https://pngimg.com/uploads/shopping_cart/shopping_cart_PNG38.png"
@@ -50,8 +51,12 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-  name: "Base"
+  name: "Base",
+  computed: {
+    ...mapGetters("account", ["user"])
+  }
 };
 </script>
 

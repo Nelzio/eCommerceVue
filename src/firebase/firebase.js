@@ -1,4 +1,5 @@
 import * as firebase from 'firebase/app'
+import 'firebase/firestore'
 
 import "firebase/auth";
 import "firebase/database";
@@ -15,5 +16,6 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 
 export default firebase;

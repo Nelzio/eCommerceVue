@@ -18,7 +18,7 @@
             class="form-control"
             placeholder="Username"
             aria-label="Username"
-            aria-describedby="basic-addon1"
+            aria-describedby="basic-addon1" v-model="product.title"
           />
         </div>
         <div class="form-group">
@@ -28,7 +28,7 @@
             class="form-control"
             placeholder="Username"
             aria-label="Username"
-            aria-describedby="basic-addon1"
+            aria-describedby="basic-addon1" v-model="product.price"
           />
         </div>
         <div class="form-group">
@@ -49,25 +49,36 @@
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Description</label>
-          <textarea class="form-control" aria-label="With textarea"></textarea>
+          <textarea class="form-control" aria-label="With textarea" v-model="product.description"></textarea>
         </div>
-        <button type="submit" class="btn btn-lg btn-block btn-primary">Submit</button>
+        <button class="btn btn-lg btn-block btn-primary" @click.stop="onSubmit()">Submit</button>
       </form>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex"
 export default {
   data() {
     return {
       image: {
         url: null,
         name: ""
+      },
+      product: {
+        title: "",
+        price: null,
+        description: ""
       }
     };
   },
   methods: {
+    ...mapActions("product", ["addProduc"]),
+
+    onSubmit() {
+      this.addProduc(this.product)
+    },
     loadImage(event) {
       const files = event.target.files;
       let filename = files[0].name;
