@@ -9,7 +9,7 @@ const routes = [
     component: () => import('../layouts/Base.vue'),
     children: [ 
       { path: '', component: () => import('../views/home/Products.vue') },
-      { path: 'details', component: () => import('../views/home/Details.vue') },
+      { path: 'details/:idProduct', component: () => import('../views/home/Details.vue') },
       { path: 'cart', component: () => import('../views/home/Cart.vue') }
     ]
   },

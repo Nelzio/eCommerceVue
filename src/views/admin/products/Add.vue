@@ -2,7 +2,12 @@
   <div style="padding: 30px;">
     <div class="row d-flex justify-content-center">
       <div class="col-7">
-        <img v-if="image.url" :src="image.url" class="image-product img-thumbnail" alt="Responsive image" />
+        <img
+          v-if="image.url"
+          :src="image.url"
+          class="image-product img-thumbnail"
+          alt="Responsive image"
+        />
         <img
           v-else
           src="https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png"
@@ -10,7 +15,7 @@
           alt="Responsive image"
         />
       </div>
-      <form class="col-7 text-left">
+      <div class="col-7 text-left">
         <div class="form-group">
           <label>Title</label>
           <input
@@ -18,7 +23,8 @@
             class="form-control"
             placeholder="Username"
             aria-label="Username"
-            aria-describedby="basic-addon1" v-model="product.title"
+            aria-describedby="basic-addon1"
+            v-model="product.title"
           />
         </div>
         <div class="form-group">
@@ -28,7 +34,8 @@
             class="form-control"
             placeholder="Username"
             aria-label="Username"
-            aria-describedby="basic-addon1" v-model="product.price"
+            aria-describedby="basic-addon1"
+            v-model="product.price"
           />
         </div>
         <div class="form-group">
@@ -42,7 +49,11 @@
                 aria-describedby="inputGroupFileAddon01"
                 @change="loadImage"
               />
-              <label v-if="image.name" class="custom-file-label" for="inputGroupFile01">{{ image.name }}</label>
+              <label
+                v-if="image.name"
+                class="custom-file-label"
+                for="inputGroupFile01"
+              >{{ image.name }}</label>
               <label v-else class="custom-file-label" for="inputGroupFile01">Choose file</label>
             </div>
           </div>
@@ -51,20 +62,27 @@
           <label for="exampleInputPassword1">Description</label>
           <textarea class="form-control" aria-label="With textarea" v-model="product.description"></textarea>
         </div>
-        <button class="btn btn-lg btn-block btn-primary" @click.stop="onSubmit()">Submit</button>
-      </form>
+        <button v-if="loading" class="btn btn-lg btn-block btn-primary">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </button>
+        <button v-else class="btn btn-lg btn-block btn-primary" @click.stop="onSubmit()">Submit</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex"
+import { mapActions, mapState } from "vuex";
 export default {
   data() {
     return {
+      loading: false,
       image: {
         url: null,
-        name: ""
+        name: "",
+        file: null
       },
       product: {
         title: "",
@@ -73,11 +91,18 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState("product", ["uploadingData"])
+  },
   methods: {
-    ...mapActions("product", ["addProduc"]),
+    ...mapActions("product", ["addProduct"]),
 
     onSubmit() {
-      this.addProduc(this.product)
+      let data = {
+        image: this.image,
+        data: this.product
+      }
+      this.addProduct(data);
     },
     loadImage(event) {
       const files = event.target.files;
@@ -90,9 +115,18 @@ export default {
       const fileReader = new FileReader();
       fileReader.addEventListener("load", () => {
         this.image.url = fileReader.result;
-        this.image.name = filename;
+        this.image.name = filename;this.product
       });
       fileReader.readAsDataURL(files[0]);
+      this.image.file = files[0]
+    }
+  },
+  watch: {
+    uploadingData(val) {
+      this.loading = val;
+      if (!val) {
+        this.$router.push("/")
+      }
     }
   }
 };

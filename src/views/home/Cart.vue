@@ -3,21 +3,21 @@
       <div class="row d-flex justify-content-center">
         <div class="list-group col-8">
         <a
-            v-for="i in 10"
-            :key="i"
+            v-for="item in cart"
+            :key="item.id"
             href="#"
             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
         >
             <img
-            src="https://d3k1tj8fr6zqkl.cloudfront.net/sites/files/loveandbravery/productimg/202001/566yona1b1.jpg"
+            :src="item.image"
             alt
             height="60"
             width="60"
             />
-            <p class="h4">Product Title</p>
+            <p class="h4">P{{ item.title }}</p>
             <div>
             <p>Price</p>
-            <p>$1250</p>
+            <p>${{ item.price }}</p>
             </div>
         </a>
         <button type="button" class="btn btn-primary btn-lg btn-block mt-4">Checkout</button>
@@ -28,8 +28,13 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-  name: "Cart"
+  name: "Cart",
+  computed: {
+    ...mapGetters("product", ["cart"])
+  }
+  
 };
 </script>
 

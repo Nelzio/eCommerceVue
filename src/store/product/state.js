@@ -1,5 +1,8 @@
 export default function () {
   return {
-    userData: {},
+    uploadingData: false,
+    products: [],
+    product: {},
+    cart: []
   }
 }

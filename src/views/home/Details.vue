@@ -5,17 +5,17 @@
         <div class="card text-left shadow-md">
           <img
             class="card-img-top"
-            src="https://d3k1tj8fr6zqkl.cloudfront.net/sites/files/loveandbravery/productimg/202001/566yona1b1.jpg"
+            :src="product.image"
             alt
           />
         </div>
       </div>
       <div class="col-6 text-left text-justify">
-        <div class="display-3">Product Title</div>
-        <p class="lead text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolores sequi alias quos deserunt, aspernatur culpa aliquid molestiae voluptas atque, distinctio dignissimos quod. Amet vel necessitatibus repudiandae aspernatur similique.</p>
+        <div class="display-3">{{ product.title }}</div>
+        <p class="lead text-justify">{{ product.description }}</p>
         <div>
           <p class="h3">Price</p>
-          <p class="h2">$150</p>
+          <p class="h2">${{ product.price }}</p>
         </div>
         <div>
           <button type="button" class="btn btn-primary btn-lg btn-block">ADD TO CART</button>
@@ -26,7 +26,21 @@
 </template>
 
 <script>
-export default {};
+import { mapGetters, mapActions } from "vuex";
+export default {
+  computed: {
+    ...mapGetters("product", ["product"])
+  },
+  methods: {
+    ...mapActions("product", ["productDetails"]),
+    getProduct() {
+      this.productDetails(this.$route.params.idProduct)
+    }
+  },
+  mounted () {
+    this.getProduct()
+  }
+};
 </script>
 
 <style>

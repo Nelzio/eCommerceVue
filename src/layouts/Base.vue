@@ -39,7 +39,7 @@
               width="50"
               alt
             />
-            <span class="badge badge-danger badge-pill">14</span>
+            <span class="badge badge-danger badge-pill">{{ cart.length }}</span>
           </router-link>
         </div>
       </nav>
@@ -55,7 +55,8 @@ import { mapGetters } from "vuex";
 export default {
   name: "Base",
   computed: {
-    ...mapGetters("account", ["user"])
+    ...mapGetters("account", ["user"]),
+    ...mapGetters("product", ["cart"])
   }
 };
 </script>
