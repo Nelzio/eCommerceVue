@@ -14,13 +14,21 @@ const routes = [
     ]
   },
   {
+    path: '/admin',
+    component: () => import('../layouts/Base.vue'),
+    children: [ 
+      { path: '', component: () => import('../views/admin/Index.vue') },
+      { path: 'add', component: () => import('../views/admin/products/Add.vue') },
+    ]
+  },
+  {
     path: '/login',
     component: () => import('../views/account/Login.vue')
   },
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  // mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
