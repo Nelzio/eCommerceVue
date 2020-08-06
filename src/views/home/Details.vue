@@ -3,11 +3,7 @@
     <div class="row d-flex justify-content-center">
       <div class="col-6">
         <div class="card text-left shadow-md">
-          <img
-            class="card-img-top"
-            :src="product.image"
-            alt
-          />
+          <img class="card-img-top" :src="product.image" alt />
         </div>
       </div>
       <div class="col-6 text-left text-justify">
@@ -17,8 +13,19 @@
           <p class="h3">Price</p>
           <p class="h2">${{ product.price }}</p>
         </div>
-        <div>
-          <button type="button" class="btn btn-primary btn-lg btn-block">ADD TO CART</button>
+        <div v-if="user.uid">
+          <button
+            v-if="!isInCardProp"
+            @click.stop="addCart(product)"
+            type="button"
+            class="btn btn-primary btn-lg btn-block"
+          >ADD TO CART</button>
+          <button
+            v-else
+            @click.stop="removeCart(product.id)"
+            type="button"
+            class="btn btn-primary btn-lg btn-block"
+          >REMOVE FROM CART</button>
         </div>
       </div>
     </div>
@@ -26,20 +33,45 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 export default {
-  computed: {
-    ...mapGetters("product", ["product"])
-  },
-  methods: {
-    ...mapActions("product", ["productDetails"]),
-    getProduct() {
-      this.productDetails(this.$route.params.idProduct)
+  data () {
+    return {
+      isInCardProp: false,
     }
   },
-  mounted () {
-    this.getProduct()
-  }
+  computed: {
+    ...mapGetters("account", ["user"]),
+    ...mapGetters("product", ["product"]),
+    ...mapState("product", ["cart"]),
+  },
+  methods: {
+    ...mapActions("product", ["productDetails", "addCart", "removeCart"]),
+
+    getProduct() {
+      this.productDetails(this.$route.params.idProduct);
+    },
+    isInCart(id) {
+      for (let index = 0; index < this.cart.length; index++) {
+        const element = this.cart[index];
+        if (element.id === id) {
+          return true;
+        }
+      }
+      return false;
+    },
+  },
+  mounted() {
+    this.getProduct();
+  },
+  watch: {
+    product(val) {
+      this.isInCardProp = this.isInCart(val.id)
+    },
+    cart() {
+      this.isInCardProp = this.isInCart(this.product.id)
+    }
+  },
 };
 </script>
 

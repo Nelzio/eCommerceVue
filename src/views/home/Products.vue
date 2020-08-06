@@ -12,9 +12,7 @@
             <div class="card-body">
               <h5 class="card-title text-left">{{ product.title }}</h5>
               <div class="row">
-                <router-link type="button" class="btn btn-primary" :to="'/details/' + product.id">Details</router-link>
-                <button v-if="!cart.includes(product)" @click.stop="addCart(product)" type="button" class="ml-2 btn btn-secondary">Add to cart</button>
-                <button v-else @click.stop="addCart(product)" type="button" class="ml-2 btn btn-secondary">Remove from cart</button>
+                <router-link type="button" class="btn btn-primary btn-lg" :to="'/details/' + product.id">Details</router-link>
               </div>
             </div>
           </div>
@@ -25,13 +23,13 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   computed: {
-    ...mapGetters("product", ["products", "cart"])
+    ...mapGetters("product", ["products"]),
   },
   methods: {
-    ...mapActions("product", ["getProducts", "addCart"])
+    ...mapActions("product", ["getProducts", "addCart", "removeCart"]),
   },
   mounted() {
     this.getProducts();

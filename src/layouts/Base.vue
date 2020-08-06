@@ -30,17 +30,16 @@
               class="img-thumbnail profile-image"
               alt
             />
-            <router-link class="btn btn-primary my-2 my-sm-0" to="/admin/add">Add Product</router-link>
+            <router-link class="btn btn-primary my-2 my-sm-0" to="/cart">
+              <img
+                src="https://pngimg.com/uploads/shopping_cart/shopping_cart_PNG38.png"
+                width="50"
+                alt
+              />
+              <span class="badge badge-danger badge-pill">{{ cart.length }}</span>
+            </router-link>
           </div>
           <router-link v-else class="btn btn-primary my-2 my-sm-0 ml-auto" to="/login">Login</router-link>
-          <router-link class="btn btn-primary my-2 my-sm-0" to="/cart">
-            <img
-              src="https://pngimg.com/uploads/shopping_cart/shopping_cart_PNG38.png"
-              width="50"
-              alt
-            />
-            <span class="badge badge-danger badge-pill">{{ cart.length }}</span>
-          </router-link>
         </div>
       </nav>
     </div>

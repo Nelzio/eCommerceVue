@@ -74,7 +74,8 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapState } from "vuex";
+import firebase from "../../../firebase/firebase"
 export default {
   data() {
     return {
@@ -82,26 +83,24 @@ export default {
       image: {
         url: null,
         name: "",
-        file: null
+        file: null,
       },
       product: {
         title: "",
         price: null,
-        description: ""
-      }
+        description: "",
+      },
     };
   },
   computed: {
-    ...mapState("product", ["uploadingData"])
+    ...mapState("product", ["uploadingData"]),
   },
   methods: {
-    ...mapActions("product", ["addProduct"]),
-
     onSubmit() {
       let data = {
         image: this.image,
-        data: this.product
-      }
+        data: this.product,
+      };
       this.addProduct(data);
     },
     loadImage(event) {
@@ -115,20 +114,75 @@ export default {
       const fileReader = new FileReader();
       fileReader.addEventListener("load", () => {
         this.image.url = fileReader.result;
-        this.image.name = filename;this.product
+        this.image.name = filename;
+        this.product;
       });
       fileReader.readAsDataURL(files[0]);
-      this.image.file = files[0]
-    }
+      this.image.file = files[0];
+    },
+    addProduct(payload) {
+      const vm = this;
+      // Create the file metadata
+      var storageRef = firebase.storage().ref();
+
+      // Upload file and metadata to the object 'images/mountains.jpg'
+      var uploadTask = storageRef.child("products/" + payload.image.name).put(payload.image.file);
+
+      // Listen for state changes, errors, and completion of the upload.
+      uploadTask.on(
+        firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+        function (snapshot) {
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          var progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED: // or 'paused'
+              console.log("Upload is paused");
+              break;
+            case firebase.storage.TaskState.RUNNING: // or 'running'
+              console.log("Upload is running");
+              break;
+          }
+        },
+        function (error) {
+          // A full list of error codes is available at
+          // https://firebase.google.com/docs/storage/web/handle-errors
+          switch (error.code) {
+            case "storage/unauthorized":
+              // User doesn't have permission to access the object
+              break;
+
+            case "storage/canceled":
+              // User canceled the upload
+              break;
+
+            case "storage/unknown":
+              // Unknown error occurred, inspect error.serverResponse
+              break;
+          }
+        },
+        function () {
+          // Upload completed successfully, now we can get the download URL
+          uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+            console.log("File available at", downloadURL);
+            payload.data["image"] = downloadURL;
+            firebase
+              .firestore()
+              .collection("products")
+              .add(payload.data)
+              .then(function () {
+                alert("Product added successfully!");
+                vm.$router.push("/");
+              })
+              .catch(function (error) {
+                console.error("Error writing document: ", error);
+              });
+          });
+        }
+      );
+    },
   },
-  watch: {
-    uploadingData(val) {
-      this.loading = val;
-      if (!val) {
-        this.$router.push("/")
-      }
-    }
-  }
 };
 </script>
 

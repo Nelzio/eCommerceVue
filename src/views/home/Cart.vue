@@ -1,40 +1,76 @@
 <template>
   <div class="container" style="padding: 30px">
-      <div class="row d-flex justify-content-center">
-        <div class="list-group col-8">
+    <div class="row d-flex justify-content-center">
+      <div class="list-group col-8">
         <a
-            v-for="item in cart"
-            :key="item.id"
-            href="#"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          v-for="item in cart"
+          :key="item.id"
+          href="#"
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
         >
-            <img
-            :src="item.image"
-            alt
-            height="60"
-            width="60"
-            />
-            <p class="h4">P{{ item.title }}</p>
-            <div>
+          <img :src="item.image" alt height="60" width="60" />
+          <p class="h4">{{ item.title }}</p>
+          <div>
             <p>Price</p>
             <p>${{ item.price }}</p>
-            </div>
+          </div>
         </a>
-        <button type="button" class="btn btn-primary btn-lg btn-block mt-4">Checkout</button>
+        <div
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+        >
+          <p class="h4">Total</p>
+          <div>
+            <p>Total Price</p>
+            <p>${{ totalPrice }}</p>
+          </div>
         </div>
-
+        <button @click="checkout()" type="button" class="btn btn-primary btn-lg btn-block mt-4">Checkout</button>
       </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
+import firebase from "../../firebase/firebase"
 export default {
   name: "Cart",
+  data() {
+    return {
+      totalPrice: 0,
+    };
+  },
   computed: {
-    ...mapGetters("product", ["cart"])
-  }
-  
+    ...mapGetters("product", ["cart"]),
+    ...mapGetters("account", ["user"])
+  },
+  methods: {
+    ...mapActions("product", ["removeCart"]),
+    calcPrice() {
+      this.cart.forEach((element) => {
+        this.totalPrice += parseInt(element.price);
+      });
+    },
+    checkout() {
+      const vm = this;
+      let data = {
+        cart: this.cart,
+        user: this.user.uid
+      }
+      firebase.firestore().collection("cart").add(data)
+        .then(function () {
+          vm.removeCart();
+          alert("Purchase successful!");
+          vm.$router.push("/")
+        })
+        .catch(function (error) {
+          console.error("Error writing document: ", error);
+        });
+    },
+  },
+  mounted() {
+    this.calcPrice();
+  },
 };
 </script>
 

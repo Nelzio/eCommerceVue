@@ -10,14 +10,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr v-for="product in products" :key="product.id">
             <th scope="row">
-              <img src="https://d3k1tj8fr6zqkl.cloudfront.net/sites/files/loveandbravery/productimg/202001/566yona1b1.jpg" width="60" alt="">
+              <img :src="product.image" width="60" alt />
             </th>
-            <td>Product Title</td>
+            <td>{{ product.title }}</td>
             <td>
-              <button type="button" class="btn btn-primary">Details</button>
-              <button type="button" class="btn btn-danger">Delete</button>
+              <router-link
+                type="button"
+                class="btn btn-primary"
+                :to="'/details/' + product.id"
+              >Details</router-link>
+              <router-link
+                type="button"
+                class="btn btn-warning"
+                :to="'/admin/edit/' + product.id"
+              >Edit</router-link>
+              <button @click="deleteProduct(product.id)" type="button" class="btn btn-danger">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -27,7 +36,34 @@
 </template>
 
 <script>
-export default {};
+import { mapActions, mapGetters } from "vuex";
+import firebase from "../../firebase/firebase";
+export default {
+  computed: {
+    ...mapGetters("product", ["products"]),
+  },
+  methods: {
+    ...mapActions("product", ["getProducts"]),
+    deleteProduct(id) {
+      const vm = this;
+      if (!window.confirm("Delete product?")) {
+        return;
+      }
+      firebase
+        .firestore()
+        .collection("products")
+        .doc(id)
+        .delete()
+        .then(function () {
+          alert("Product was deleted");
+          vm.getProducts()
+        })
+        .catch(function (error) {
+          console.error("Error removing document: ", error);
+        });
+    },
+  },
+};
 </script>
 
 <style>
