@@ -14,15 +14,6 @@ const routes = [
     ]
   },
   {
-    path: '/admin',
-    component: () => import('../layouts/Base.vue'),
-    children: [ 
-      { path: '', component: () => import('../views/admin/Index.vue') },
-      { path: 'add', component: () => import('../views/admin/products/Add.vue') },
-      { path: 'edit/:idProduct', component: () => import('../views/admin/products/Edit.vue') },
-    ]
-  },
-  {
     path: '/login',
     component: () => import('../views/account/Login.vue')
   },

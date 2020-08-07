@@ -24,7 +24,11 @@
             <p>${{ totalPrice }}</p>
           </div>
         </div>
-        <button @click="checkout()" type="button" class="btn btn-primary btn-lg btn-block mt-4">Checkout</button>
+        <button
+          @click="checkout()"
+          type="button"
+          class="btn btn-primary btn-lg btn-block mt-4"
+        >Checkout</button>
       </div>
     </div>
   </div>
@@ -32,7 +36,6 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import firebase from "../../firebase/firebase"
 export default {
   name: "Cart",
   data() {
@@ -42,7 +45,7 @@ export default {
   },
   computed: {
     ...mapGetters("product", ["cart"]),
-    ...mapGetters("account", ["user"])
+    ...mapGetters("account", ["user"]),
   },
   methods: {
     ...mapActions("product", ["removeCart"]),
@@ -53,19 +56,11 @@ export default {
     },
     checkout() {
       const vm = this;
-      let data = {
-        cart: this.cart,
-        user: this.user.uid
-      }
-      firebase.firestore().collection("cart").add(data)
-        .then(function () {
-          vm.removeCart();
-          alert("Purchase successful!");
-          vm.$router.push("/")
-        })
-        .catch(function (error) {
-          console.error("Error writing document: ", error);
-        });
+      setTimeout(() => {
+        vm.removeCart();
+        alert("Purchase successful!");
+        vm.$router.push("/");
+      }, 2000);
     },
   },
   mounted() {

@@ -1,25 +1,20 @@
-import firebase from "../../firebase/firebase"
 import router from '../../router'
+import Axios from 'axios';
 
-export function googleLogin({ commit }) {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    firebase
-        .auth()
-        .signInWithPopup(provider)
-        .then(function (result) {
-            let userData = {
-                displayName: result.user.displayName,
-                email: result.user.email,
-                emailVerified: result.user.emailVerified,
-                phoneNumber: result.user.phoneNumber,
-                photoURL: result.user.photoURL,
-                refreshToken: result.user.refreshToken,
-                uid: result.user.uid
-            }
+export function login({ commit }) {
+    let url = 'https://randomuser.me/api/';
+    Axios.get(url).then(function (response) {
+        console.log(response.data)
+        let userData = {
+            displayName: response.data.results[0].name.first,
+            email: response.data.results[0].email,
+            photoURL: response.data.results[0].picture.thumbnail,
+            uid: response.data.results[0].login.uuid
+        }
 
-            commit("setUserData", userData)
-            router.push('/')
-        })
+        commit("setUserData", userData)
+        router.push('/')
+    })
         .catch(function (error) {
             console.log(error)
         });

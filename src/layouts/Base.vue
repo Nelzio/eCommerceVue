@@ -3,28 +3,8 @@
     <div>
       <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <router-link class="navbar-brand" to="/">CS-eCommerce</router-link>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <!-- <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <router-link class="nav-link h4" to="/">Home</router-link>
-            </li>
-            <li class="nav-item h4">
-            <router-link class="nav-link h4" to="/profile">Profile</router-link>
-            </li>
-          </ul>-->
-          <div v-if="user.photoURL" class="ml-auto">
+        <div class="ml-auto">
+          <div v-if="user.photoURL">
             <img
               :src="user.photoURL"
               class="img-thumbnail profile-image"
@@ -39,7 +19,7 @@
               <span class="badge badge-danger badge-pill">{{ cart.length }}</span>
             </router-link>
           </div>
-          <router-link v-else class="btn btn-primary my-2 my-sm-0 ml-auto" to="/login">Login</router-link>
+          <router-link v-else class="btn btn-primary my-2 my-sm-0" to="/login">Login</router-link>
         </div>
       </nav>
     </div>

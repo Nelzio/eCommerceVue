@@ -1,48 +1,26 @@
-import firebase from "../../firebase/firebase"
-// import router from '../../router'
+import axios from "axios"
 
 export function getProducts({ commit }) {
-    let products = []
-    firebase.firestore().collection("products").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            // console.log(`${doc.id} => ${doc.data()}`);
-            products.push({
-                id: doc.id,
-                description: doc.data().description,
-                image: doc.data().image,
-                price: doc.data().price,
-                title: doc.data().title
-            })
-        });
-        commit("setProducts", products)
+    let url = "https://my-json-server.typicode.com/Nelzio/ecommerce-fake-json/products";
+    axios.get(url).then((response) => {
+        commit("setProducts", response.data);
+    }).catch(error => {
+        console.log(error);
     });
 }
 
 export function productDetails({ commit }, id) {
-    var docRef = firebase.firestore().collection("products").doc(id);
-
-    docRef.get().then(function (doc) {
-        if (doc.exists) {
-            let data = {
-                id: doc.id,
-                description: doc.data().description,
-                image: doc.data().image,
-                price: doc.data().price,
-                title: doc.data().title
-            }
-            commit("setProduct", data)
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-        }
+    let url = "https://my-json-server.typicode.com/Nelzio/ecommerce-fake-json/products";
+    axios.get(url, { params: { id: id } }).then((response) => {
+        commit("setProduct", response.data[0]);
     }).catch(function (error) {
-        console.log("Error getting document:", error);
+        console.log(error);
     });
 }
 
-export function addCart({ commit, getters }, id) {
+export function addCart({ commit, getters }, payload) {
     let cart = getters.cart
-    cart.push(id)
+    cart.push(payload)
     commit("setCart", cart)
 }
 
