@@ -20,7 +20,9 @@ export function productDetails({ commit }, id) {
 
 export function addCart({ commit, getters }, payload) {
     let cart = getters.cart
-    cart.push(payload)
+    let data = payload.product
+    data["quantity"] = payload.quantity
+    cart.push(data)
     commit("setCart", cart)
 }
 

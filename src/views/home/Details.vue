@@ -13,27 +13,15 @@
           <p class="h3">Price</p>
           <p class="h2">${{ product.price }}</p>
         </div>
-        <div v-if="user.uid">
-          <button
-            v-if="!isInCardProp"
-            @click.stop="addCart(product)"
-            type="button"
-            class="btn btn-primary btn-lg btn-block"
-          >ADD TO CART</button>
-          <button
-            v-else
-            @click.stop="removeCart(product.id)"
-            type="button"
-            class="btn btn-primary btn-lg btn-block"
-          >REMOVE FROM CART</button>
-        </div>
+        <AddToCart :product="product" v-if="user.uid" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from "vuex";
+import { mapGetters, mapActions } from "vuex";
+import AddToCart from "../../components/details/AddToCart"
 export default {
   data () {
     return {
@@ -42,36 +30,15 @@ export default {
   },
   computed: {
     ...mapGetters("account", ["user"]),
-    ...mapGetters("product", ["product"]),
-    ...mapState("product", ["cart"]),
+    ...mapGetters("product", ["product"])
   },
+  components: { AddToCart },
   methods: {
-    ...mapActions("product", ["productDetails", "addCart", "removeCart"]),
-
-    getProduct() {
-      this.productDetails(this.$route.params.idProduct);
-    },
-    isInCart(id) {
-      for (let index = 0; index < this.cart.length; index++) {
-        const element = this.cart[index];
-        if (element.id === id) {
-          return true;
-        }
-      }
-      return false;
-    },
+    ...mapActions("product", ["productDetails"]),
   },
   mounted() {
-    this.getProduct();
-  },
-  watch: {
-    product(val) {
-      this.isInCardProp = this.isInCart(val.id)
-    },
-    cart() {
-      this.isInCardProp = this.isInCart(this.product.id)
-    }
-  },
+    this.productDetails(this.$route.params.idProduct);
+  }
 };
 </script>
 

@@ -4,7 +4,6 @@ import Axios from 'axios';
 export function login({ commit }) {
     let url = 'https://randomuser.me/api/';
     Axios.get(url).then(function (response) {
-        console.log(response.data)
         let userData = {
             displayName: response.data.results[0].name.first,
             email: response.data.results[0].email,

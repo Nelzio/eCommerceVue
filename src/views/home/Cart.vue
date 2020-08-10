@@ -8,11 +8,21 @@
           href="#"
           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
         >
-          <img :src="item.image" alt height="60" width="60" />
-          <p class="h4">{{ item.title }}</p>
-          <div>
-            <p>Price</p>
-            <p>${{ item.price }}</p>
+          <img :src="item.imageUrl" alt height="60" width="60" />
+          <p class="h4">{{ item.name }}</p>
+          <div class="row">
+            <div class="mr-2">
+              <p>Unique Price</p>
+              <p>${{ item.price }}</p>
+            </div>
+            <div class="mr-2">
+              <p>Total Price</p>
+              <p>${{ item.price * item.quantity }}</p>
+            </div>
+            <div>
+              <p>Quantity</p>
+              <p>{{ item.quantity }}</p>
+            </div>
           </div>
         </a>
         <div
@@ -51,7 +61,7 @@ export default {
     ...mapActions("product", ["removeCart"]),
     calcPrice() {
       this.cart.forEach((element) => {
-        this.totalPrice += parseInt(element.price);
+        this.totalPrice += element.price * element.quantity;
       });
     },
     checkout() {
